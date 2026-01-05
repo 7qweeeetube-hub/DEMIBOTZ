@@ -1,5 +1,8 @@
 import plugins.monkey_patch
 import sys
+import glob
+import importlib
+from pathlib import Path
 from pyrogram import Client, idle, __version__
 from pyrogram.raw.all import layer
 import time
@@ -7,6 +10,14 @@ from pyrogram.errors import FloodWait
 import asyncio
 from datetime import date, datetime
 import pytz
+
+# ===================================================================
+# NEW CODE: SCHEDULER IMPORTS
+# ===================================================================
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+# ===================================================================
+
 from aiohttp import web
 from database.ia_filterdb import Media, Media2
 from database.users_chats_db import db
@@ -31,21 +42,79 @@ logging.getLogger("aiohttp").setLevel(logging.ERROR)
 logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 logging.getLogger("pymongo").setLevel(logging.WARNING)
 
+# ===================================================================
+# NEW CODE: SCHEDULER INITIALIZATION AND FUNCTIONS
+# ===================================================================
+
+# Initialize the Scheduler instance
+scheduler = AsyncIOScheduler()
+
+async def index_messages(client):
+    """The core function to re-index all channels."""
+    print("🤖 Starting daily auto-index task...")
+    try:
+        # Assuming your main index function is here
+        from plugins.index_files import full_index_channels
+        await full_index_channels(client) # Pass the Pyrogram client instance
+        print("✅ Daily auto-index completed.")
+    except ImportError:
+         print("❌ Error: Could not find 'full_index_channels'. Ensure it's correctly defined.")
+    except Exception as e:
+        print(f"❌ Error during daily index: {e}")
+
+def schedule_daily_index(client, hour: int, minute: int):
+    """Schedules the index_messages task for a specific time."""
+    # Remove any existing jobs named 'Daily Indexer'
+    if scheduler.get_job('Daily Indexer'):
+        scheduler.remove_job('Daily Indexer')
+
+    # Add the new daily job
+    # Note: APScheduler CronTrigger uses UTC time by default.
+    scheduler.add_job(
+        index_messages,
+        CronTrigger(hour=hour, minute=minute),
+        args=[client],
+        name='Daily Indexer',
+        misfire_grace_time=600 # Wait up to 10 minutes if job is missed
+    )
+    print(f"⏰ Daily Indexing scheduled for {hour:02d}:{minute:02d} UTC everyday.")
+
+# ===================================================================
+# END OF SCHEDULER CODE
+# ===================================================================
+
 botStartTime = time.time()
+ppath = "plugins/*.py"
+files = glob.glob(ppath)
 
 async def dreamxbotz_start():
     print('\n\nInitalizing DreamxBotz')
     await dreamxbotz.start()
+    
+    # ===============================================================
+    # NEW CODE: START SCHEDULER AND SET DEFAULT INDEX TIME
+    # ===============================================================
+    #scheduler.start()
+    # Schedule a default time for the daily index (e.g., 03:00 AM UTC)
+    #schedule_daily_index(dreamxbotz, hour=3, minute=0)
+    # ===============================================================
+    
     bot_info = await dreamxbotz.get_me()
     dreamxbotz.username = bot_info.username
     await initialize_clients()
-    if 0 in dreamxbotz.dispatcher.groups:
-        all_handlers = list(dreamxbotz.dispatcher.groups[0])
-        for i, handler in enumerate(all_handlers):
-            dreamxbotz.dispatcher.remove_handler(handler, group=0)
-            dreamxbotz.dispatcher.add_handler(handler, group=i)
+    for name in files:
+        with open(name) as a:
+            patt = Path(a.name)
+            plugin_name = patt.stem.replace(".py", "")
+            plugins_dir = Path(f"plugins/{plugin_name}.py")
+            import_path = "plugins.{}".format(plugin_name)
+            spec = importlib.util.spec_from_file_location(import_path, plugins_dir)
+            load = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(load)
+            sys.modules["plugins." + plugin_name] = load
+            print("DreamxBotz Imported => " + plugin_name)
     if ON_HEROKU:
-        asyncio.create_task(ping_server()) 
+        asyncio.create_task(ping_server())  
     b_users, b_chats = await db.get_banned()
     temp.BANNED_USERS = b_users
     temp.BANNED_CHATS = b_chats
@@ -82,7 +151,7 @@ if __name__ == '__main__':
     while True:
         try:
             loop.run_until_complete(dreamxbotz_start())
-            break  
+            break 
         except FloodWait as e:
             print(f"FloodWait! Sleeping for {e.value} seconds.")
             time.sleep(e.value) 
