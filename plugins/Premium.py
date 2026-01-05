@@ -263,5 +263,3 @@ async def successful_premium_payment(client, message):
     except Exception as e:
         print(f"Error Processing Premium Payment: {e}")
         await message.reply("✅ Thank You For Your Payment! (Error Logging Details)")
-
-
