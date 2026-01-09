@@ -1807,13 +1807,21 @@ async def auto_filter(client, msg, spoll=False):
                         result = await advantage_spell_chok(client, message)
                         return result
                     else:
-                        # 👇 NOW it will just stop if set to False
                         try:
                             if m:
                                 await m.delete()
                         except Exception:
                             pass
-                        return # Stop here, don't show buttons
+                        
+                        # 👇 ADD THIS BLOCK TO SEND THE "NOT FOUND" MESSAGE
+                        await message.reply_text(
+                            text=script.I_CUD_NT.format(search),
+                            quote=True,
+                            reply_markup=InlineKeyboardMarkup([
+                                [InlineKeyboardButton("📝 ʀᴇǫᴜᴇsᴛ ʜᴇʀᴇ", url=GRP_LNK)]
+                            ])
+                        )
+                        return
             else:
                 return
         else:
