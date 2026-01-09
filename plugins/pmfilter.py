@@ -1807,21 +1807,26 @@ async def auto_filter(client, msg, spoll=False):
                         result = await advantage_spell_chok(client, message)
                         return result
                     else:
-                        try:
-                            if m:
-                                await m.delete()
-                        except Exception:
-                            pass
-                        
-                        # 👇 ADD THIS BLOCK TO SEND THE "NOT FOUND" MESSAGE
-                        await message.reply_text(
-                            text=script.I_CUD_NT.format(search),
-                            quote=True,
-                            reply_markup=InlineKeyboardMarkup([
-                                [InlineKeyboardButton("📝 ʀᴇǫᴜᴇsᴛ ʜᴇʀᴇ", url=GRP_LNK)]
-                            ])
-                        )
-                        return
+                    # 1. Delete the "Searching..." sticker
+                    try:
+                        if m:
+                            await m.delete()
+                    except Exception:
+                        pass
+                    
+                    # 2. Create the Google Search URL based on what they typed
+                    google_url = f"https://www.google.com/search?q={quote_plus(search)}"
+
+                    # 3. Send the "Not Found" message with the Google Button
+                    await message.reply_text(
+                        text=script.I_CUD_NT.format(search),
+                        quote=True,
+                        reply_markup=InlineKeyboardMarkup([
+                            [InlineKeyboardButton("🔍 Check Spelling on Google 🔍", url=google_url)],
+                            [InlineKeyboardButton("📝 Request Here", url=GRP_LNK)]
+                        ])
+                    )
+                    return
             else:
                 return
         else:
