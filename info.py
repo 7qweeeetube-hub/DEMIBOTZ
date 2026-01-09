@@ -27,7 +27,7 @@ BOT_TOKEN = environ.get('BOT_TOKEN', "")    # Bot token from @BotFather
 # ============================
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))    # Cache time in seconds (default: 5 minutes)
 USE_CAPTION_FILTER = bool(environ.get('USE_CAPTION_FILTER', True))  # Use caption filter for search results (default: True)
-INDEX_CAPTION = bool(environ.get('SAVE_CAPTION', True)) # Save caption db when idexing make it False if you dont use USE_CAPTION_FILTER for search results (default: True)
+INDEX_CAPTION = bool(environ.get('SAVE_CAPTION', False)) # Save caption db when idexing make it False if you dont use USE_CAPTION_FILTER for search results (default: True)
 #Making it false will not save caption in db SO you can save some storage space
 COVERX = bool(environ.get('COVERX', True)) # Use cover image for indexed files (default: True)
 # If you disable it then bot will use a default thumb for all files
@@ -61,8 +61,9 @@ auth_channels     = environ.get("AUTH_CHANNELS", "-100")# Channels for force sub
 # ============================
 # Payment Configuration
 # ============================
-QR_CODE = environ.get('QR_CODE', 'https://graph.org/file/e419f801841c2ee3db0fc.jpg')    # QR code image for payments
-OWNER_UPI_ID = environ.get('OWNER_UPI_ID', 'ɴᴏ ᴀᴠᴀɪʟᴀʙʟᴇ ʀɪɢʜᴛ ɴᴏᴡ')    # Owner UPI ID for payments
+QR_CODE = environ.get('QR_CODE', 'https://files.catbox.moe/4feiis.jpg')    # QR code image for payments
+OWNER_UPI_ID = environ.get('OWNER_UPI_ID', 'tmd-botz@ptaxis')    # Owner UPI ID for payments
+
 
 STAR_PREMIUM_PLANS = {
     10: "7day",
@@ -97,7 +98,7 @@ LANDSCAPE_POSTER = bool(environ.get('LANDSCAPE_POSTER', True)) # Shows landscape
 # ============================
 # Verification Settings
 # ============================
-IS_VERIFY = is_enabled('IS_VERIFY', False)  # Verification On (True) / Off (False)
+IS_VERIFY = is_enabled('IS_VERIFY', True)  # Verification On (True) / Off (False)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-100')) #Verification Channel Id 
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-100')) #If Anyone Set Your Bot In Any Group And Set Shortner In That Group Then In This Channel The All Details Come
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
@@ -122,9 +123,9 @@ THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
 # ============================
 # Channel & Group Links Configuration
 # ============================
-GRP_LNK = environ.get('GRP_LNK', 'https://t.me/dreamxbotz') # Group link for the bot
-OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/dreamxbotz') # Owner link for the bot
-UPDATE_CHNL_LNK = environ.get('UPDATE_CHNL_LNK', 'https://t.me/dreamxbotz') # Update channel link for the bot
+GRP_LNK = environ.get('GRP_LNK', 'https://t.me/+RXnEUdYTcNhmNjg1') # Group link for the bot
+OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/tamilmoviesdownloadtorrent') # Owner link for the bot
+UPDATE_CHNL_LNK = environ.get('UPDATE_CHNL_LNK', 'https://t.me/+s4wwf5daeWRmOGJl') # Update channel link for the bot
 
 # ============================
 # User Configuration
@@ -136,7 +137,7 @@ PREMIUM_USER = [int(user) if id_pattern.search(user) else user for user in envir
 # ============================
 # Miscellaneous Configuration
 # ============================
-ULTRA_FAST_MODE = is_enabled(environ.get('ULTRA_FAST_MODE', "False"), True) # Set to True for fast search, False for original search
+ULTRA_FAST_MODE = is_enabled(environ.get('ULTRA_FAST_MODE', "True"), True) # Set to True for fast search, False for original search
 
 MAX_B_TN = environ.get("MAX_B_TN", "5") # Maximum number of buttons in a row (default: 5)
 PORT = int(environ.get("PORT", "8080"))  # Port for the web server (default: 8080)
@@ -155,7 +156,7 @@ TMDB_ON_SEARCH = is_enabled((environ.get('TMDB_ON_SEARCH', "False")), False)    
 AUTO_FFILTER = is_enabled((environ.get('AUTO_FFILTER', "True")), True) # Auto Filter On (True) / Off (False)
 AUTO_DELETE = is_enabled((environ.get('AUTO_DELETE', "True")), True) # Auto Delete On (True) / Off (False)
 LONG_IMDB_DESCRIPTION = is_enabled(environ.get("LONG_IMDB_DESCRIPTION", "False"), False) # Long IMDB Description On (True) / Off (False)
-SPELL_CHECK_REPLY = is_enabled(environ.get("SPELL_CHECK_REPLY", "True"), True) # Spell Check Mode On (True) / Off (False)
+SPELL_CHECK_REPLY = is_enabled(environ.get("SPELL_CHECK_REPLY", "False"), False) # Spell Check Mode On (True) / Off (False)
 MELCOW_NEW_USERS = is_enabled((environ.get('MELCOW_NEW_USERS', "False")), False) # Melcow New Users On (True) / Off (False)
 PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), False) # Protect Content On (True) / Off (False)
 PM_SEARCH = bool(environ.get('PM_SEARCH', True))  # PM Search On (True) / Off (False)
