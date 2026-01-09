@@ -1795,9 +1795,9 @@ async def auto_filter(client, msg, spoll=False):
                 settings = await get_settings(message.chat.id)
                 if not files:
                     if settings.get("spell_check"):
+                        # ... (AI spell check logic) ...
                         ai_sts = await m.edit('🤖 ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ, ᴀɪ ɪꜱ ᴄʜᴇᴄᴋɪɴɢ ʏᴏᴜʀ ꜱᴘᴇʟʟɪɴɢ...')
                         is_misspelled = await ai_spell_check(chat_id=message.chat.id, wrong_name=search)
-
                         if is_misspelled:
                             await ai_sts.edit(f'✅ Aɪ Sᴜɢɢᴇsᴛᴇᴅ: <code>{is_misspelled}</code>\n🔍 Searching for it...')
                             message.text = is_misspelled
@@ -1807,13 +1807,13 @@ async def auto_filter(client, msg, spoll=False):
                         result = await advantage_spell_chok(client, message)
                         return result
                     else:
+                        # 👇 NOW it will just stop if set to False
                         try:
                             if m:
                                 await m.delete()
                         except Exception:
                             pass
-                        result = await advantage_spell_chok(client, message)
-                        return result
+                        return # Stop here, don't show buttons
             else:
                 return
         else:
