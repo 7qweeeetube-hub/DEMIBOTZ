@@ -47,17 +47,38 @@ async def give_filter(client, message):
             await message.react(emoji="⚡️")
             pass
     await mdb.update_top_messages(message.from_user.id, message.text)
-    # MODIFIED: Removed SUPPORT_CHAT_ID check so it sends files everywhere
-    settings = await get_settings(message.chat.id)
-    try:
-        if settings['auto_ffilter']:
-            if re.search(r'https?://\S+|www\.\S+|t\.me/\S+', message.text):
-                if await is_check_admin(client, message.chat.id, message.from_user.id):
-                    return
-                return await message.delete()
-            await auto_filter(client, message)
-    except KeyError:
-        pass
+
+    # HARDCODED SUPPORT GROUP LOGIC
+    # If the chat ID is NOT your support group, send files normally.
+    if message.chat.id != -1003585689544: 
+        settings = await get_settings(message.chat.id)
+        try:
+            if settings['auto_ffilter']:
+                if re.search(r'https?://\S+|www\.\S+|t\.me/\S+', message.text):
+                    if await is_check_admin(client, message.chat.id, message.from_user.id):
+                        return
+                    return await message.delete()
+                await auto_filter(client, message)
+        except KeyError:
+            pass
+            
+    # If the chat ID IS -1003585689544, show the Support Message instead of files.
+    else:
+        search = message.text
+        # We check if files exist just to show the count, but we DON'T send them.
+        _, _, total_results = await get_search_results(chat_id=message.chat.id, query=search.lower(), offset=0, filter=True)
+        if total_results == 0:
+            return
+        await message.reply_text(
+            f"<b>Hᴇʏ {message.from_user.mention},\n\n"
+            f"ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴀᴠᴀɪʟᴀʙʟᴇ ✅\n\n"
+            f"📂 ꜰɪʟᴇꜱ ꜰᴏᴜɴᴅ : {str(total_results)}\n"
+            f"🔍 ꜱᴇᴀʀᴄʜ :</b> <code>{search}</code>\n\n"
+            f"<b>‼️ ᴛʜɪs ɪs ᴀ <u>sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ</u> sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ'ᴛ ɢᴇᴛ ғɪʟᴇs ғʀᴏᴍ ʜᴇʀᴇ...\n\n"
+            f"📝 ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ : 👇</b>",
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton("🔍 ᴊᴏɪɴ ᴀɴᴅ ꜱᴇᴀʀᴄʜ ʜᴇʀᴇ 🔎", url=GRP_LNK)]])
+        )
 
 
 @Client.on_message(filters.private & filters.text & filters.incoming & ~filters.regex(r"^/") & ~filters.regex(r"(https?://)?(t\.me|telegram\.me|telegram\.dog)/"))
