@@ -271,6 +271,7 @@ sʜᴏᴡɴ ɪɴ : {remaining_seconds} <i>sᴇᴄ</i>⚡️
 •─────•─────────•─────•
 
 🏷️ <b>ᴘᴀʏᴍᴇɴᴛ ᴍᴇᴛʜᴏᴅꜱ</b>
+<a href="https://tamilmoviesdownload.github.io/payment-page">🌐 ᴏꜰꜰɪᴄɪᴀʟ ᴘᴀʏᴍᴇɴᴛ ᴘᴀɢᴇ</a>
 
 💸 ᴜᴘɪ ɪᴅ → <code>{}</code>  
 📷 ǫʀ ᴄᴏᴅᴇ → <a href='{}'>ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ꜱᴄᴀɴ</a>  
@@ -343,6 +344,7 @@ Click on <b>/plan</b> to check our other plans.</blockquote>
 •─────•─────────•─────•
 
 🏷️ <b>ᴘᴀʏᴍᴇɴᴛ ᴍᴇᴛʜᴏᴅꜱ</b>
+<a href="https://tamilmoviesdownload.github.io/payment-page">🌐 ᴏꜰꜰɪᴄɪᴀʟ ᴘᴀʏᴍᴇɴᴛ ᴘᴀɢᴇ</a>
 
 💸 ᴜᴘɪ ɪᴅ → <code>{}</code>  
 📷 ǫʀ ᴄᴏᴅᴇ → <a href='{}'>ᴄʟɪᴄᴋ ʜᴇʀᴇ ᴛᴏ ꜱᴄᴀɴ</a>  
