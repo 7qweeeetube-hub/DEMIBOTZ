@@ -1478,6 +1478,13 @@ async def clean_groups_handler(client, message):
             print(f'Error in clean_groups loop: {e}')
     await msg.edit(f'**Clean Groups Complete**\n\nTotal Processed: {processed}\nDeleted: {deleted_count}')
 
+@Client.on_message(filters.command('set_shortner_b'))
+async def set_shortner_b(c, m):
+    await handle_shortner_command(c, m, 'shortner_b', 'api_b', 'Set_Shortner_Day_B_1', SHORTENER_WEBSITE_B, SHORTENER_API_B)
+
+@Client.on_message(filters.command('set_shortner_2b'))
+async def set_shortner_2b(c, m):
+    await handle_shortner_command(c, m, 'shortner_two_b', 'api_two_b', 'Set_Shortner_Day_B_2', SHORTENER_WEBSITE2_B, SHORTENER_API2_B)
 
 @Client.on_message(filters.command("adstatus") & filters.user(ADMINS))
 async def check_ad_rotation(client, message):
