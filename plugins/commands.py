@@ -1477,3 +1477,44 @@ async def clean_groups_handler(client, message):
         except Exception as e:
             print(f'Error in clean_groups loop: {e}')
     await msg.edit(f'**Clean Groups Complete**\n\nTotal Processed: {processed}\nDeleted: {deleted_count}')
+
+
+@Client.on_message(filters.command("adstatus") & filters.user(ADMINS))
+async def check_ad_rotation(client, message):
+    from datetime import datetime
+    import pytz
+    
+    # 1. Get Current Time in your timezone
+    ist = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(ist)
+    day_num = now.day
+    
+    # 2. Check the Logic (Same as what we put in utils.py)
+    is_even_day = day_num % 2 == 0
+    active_set = "🔴 SET A (Even Day)" if is_even_day else "🔵 SET B (Odd Day)"
+    
+    # 3. Get the current settings for this group
+    settings = await get_settings(message.chat.id)
+    
+    # 4. Determine which values are being picked right now
+    if is_even_day:
+        s1 = settings.get('shortner', 'Not Set')
+        s2 = settings.get('shortner_two', 'Not Set')
+    else:
+        s1 = settings.get('shortner_b', 'Not Set')
+        s2 = settings.get('shortner_two_b', 'Not Set')
+
+    # 5. Build a cool looking response
+    status_text = (
+        "<b>📊 <u>SHORTENER ROTATION STATUS</u></b>\n\n"
+        f"📅 <b>Today's Date:</b> <code>{now.strftime('%d-%m-%Y')}</code>\n"
+        f"🔢 <b>Day Number:</b> <code>{day_num}</code> ({'Even' if is_even_day else 'Odd'})\n"
+        f"✅ <b>Active Rotation:</b> <code>{active_set}</code>\n\n"
+        f"<b><u>Current Live Shorteners:</u></b>\n"
+        f"🔗 <b>1st (4hr Reset):</b> <code>{s1}</code>\n"
+        f"🔗 <b>2nd (24hr Reset):</b> <code>{s2}</code>\n\n"
+        f"⚙️ <i>The bot will automatically switch to the other set at 12:00 AM tonight.</i>"
+    )
+
+    await message.reply_text(status_text)
+    
