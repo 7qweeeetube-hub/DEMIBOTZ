@@ -16,6 +16,7 @@ from database.users_chats_db import db
 from bs4 import BeautifulSoup
 import requests
 from shortzy import Shortzy
+from datetime import datetime
 
 from plugins.Dreamxfutures.Imdbposter import get_movie_detailsx
 
@@ -380,13 +381,34 @@ async def search_gagala(text):
 
 async def get_shortlink(link, grp_id, is_second_shortener=False, is_third_shortener=False):
     settings = await get_settings(grp_id)
-    if is_third_shortener:             
+    
+    # Logic: Switch sets based on the day of the month
+    # Even Days (2, 4, 6...) use Set A | Odd Days (1, 3, 5...) use Set B
+    is_even_day = datetime.now().day % 2 == 0
+    
+    if is_third_shortener:
+        # If you use a 3rd one, you can add rotation here too, 
+        # but following your request for 2 different ones:
         api, site = settings['api_three'], settings['shortner_three']
     else:
         if is_second_shortener:
-            api, site = settings['api_two'], settings['shortner_two']
+            # 2nd Verification (End of day renewal)
+            if is_even_day:
+                api = settings.get('api_two', SHORTENER_API2)
+                site = settings.get('shortner_two', SHORTENER_WEBSITE2)
+            else:
+                api = settings.get('api_two_b', SHORTENER_API2_B)
+                site = settings.get('shortner_two_b', SHORTENER_WEBSITE2_B)
         else:
-            api, site = settings['api'], settings['shortner']
+            # 1st Verification (4 hours renewal)
+            if is_even_day:
+                api = settings.get('api', SHORTENER_API)
+                site = settings.get('shortner', SHORTENER_WEBSITE)
+            else:
+                api = settings.get('api_b', SHORTENER_API_B)
+                site = settings.get('shortner_b', SHORTENER_WEBSITE_B)
+
+    # Convert using Shortzy
     shortzy = Shortzy(api, site)
     try:
         link = await shortzy.convert(link)
